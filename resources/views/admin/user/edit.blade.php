@@ -2,78 +2,65 @@
 
 @section('content')
 
-<div class="app-content-header">
-    <div class="container-fluid">
-        <h3 class="mb-0">Edit User</h3>
-    </div>
-</div>
+<div class="container">
 
-<div class="app-content">
-    <div class="container-fluid">
+    <h3>Edit User</h3>
 
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Form Edit User</h3>
-            </div>
+    <form action="{{ route('user.update',$user->id) }}" method="POST">
+        @csrf
 
-            <div class="card-body">
+        {{-- ERROR --}}
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
-                {{-- Error Validation --}}
-                @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                <form action="{{ route('user.update', $user->id) }}" method="POST">
-                    @csrf
-
-                    <div class="mb-3">
-                        <label>Nama</label>
-                        <input type="text" name="name"
-                            value="{{ old('name', $user->name) }}"
-                            class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" name="email"
-                            value="{{ old('email', $user->email) }}"
-                            class="form-control">
-                    </div>
-
-                    {{-- ✅ TAMBAHAN ROLE --}}
-                    <div class="mb-3">
-                        <label>Role</label>
-                        <select name="role_id" class="form-control">
-                            <option value="">-- Pilih Role --</option>
-                            @foreach($roles as $role)
-                                <option value="{{ $role->id }}"
-                                    {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
-                                    {{ $role->name }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                        @error('role_id')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
-
-                    <button class="btn btn-outline-warning">Update</button>
-                    <a href="{{ route('user.index') }}" class="btn btn-outline-danger">
-                        Back
-                    </a>
-                </form>
-
-            </div>
+        {{-- NAMA --}}
+        <div class="mb-3">
+            <label>Nama</label>
+            <input type="text" name="name" value="{{ old('name', $user->name) }}" class="form-control">
         </div>
 
-    </div>
+        {{-- EMAIL --}}
+        <div class="mb-3">
+            <label>Email</label>
+            <input type="email" name="email" value="{{ old('email', $user->email) }}" class="form-control">
+        </div>
+
+        {{-- PASSWORD --}}
+        <div class="mb-3">
+            <label>Password (Kosongkan jika tidak diubah)</label>
+            <input type="password" name="password" class="form-control">
+        </div>
+
+        {{-- KONFIRMASI PASSWORD --}}
+        <div class="mb-3">
+            <label>Konfirmasi Password</label>
+            <input type="password" name="password_confirmation" class="form-control">
+        </div>
+
+        {{-- ROLE --}}
+        <div class="mb-3">
+            <label>Role</label>
+            <select name="role_id" class="form-control">
+                @foreach($roles as $role)
+                <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
+                    {{ $role->name }}
+                </option>
+                @endforeach
+            </select>
+        </div>
+
+        <button class="btn btn-warning">Update</button>
+        <a href="{{ route('user.index') }}" class="btn btn-secondary">Back</a>
+
+    </form>
+
 </div>
 
 @endsection
